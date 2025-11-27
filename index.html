@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Для тебя ❤️</title>
+<style>
+  :root{
+    --bg:#0f1724;
+    --card:#0b1220;
+    --accent:#ff6b9a;
+    --accent-2:#ff8fb3;
+    --muted:rgba(255,255,255,0.75);
+    --glass: rgba(255,255,255,0.04);
+    --glass-2: rgba(255,255,255,0.02);
+    --radius:18px;
+    --maxw:1100px;
+    --font-sans: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+  }
+
+  /* Reset */
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    min-height:100vh;
+    font-family:var(--font-sans);
+    background:
+      radial-gradient(1200px 400px at 10% 10%, rgba(255,107,154,0.06), transparent 10%),
+      linear-gradient(180deg, #071022 0%, var(--bg) 100%);
+    color: #fff;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px;
+  }
+
+  .wrap{
+    width:100%;
+    max-width:var(--maxw);
+    display:grid;
+    grid-template-columns: 1fr 420px;
+    gap:28px;
+    align-items:center;
+  }
+
+  /* Left column (hero, message) */
+  .hero{
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    border-radius:var(--radius);
+    padding:34px;
+    position:relative;
+    overflow:hidden;
+    box-shadow: 0 10px 30px rgba(2,6,23,0.7), inset 0 1px 0 rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.03);
+  }
+
+  .logo{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    margin-bottom:18px;
+  }
+  .logo .heart{
+    width:46px;height:46px;border-radius:12px;
+    display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    box-shadow:0 6px 20px rgba(255,107,154,0.18);
+    font-weight:700;
+    transform:rotate(15deg);
+  }
+  h1{
+    font-size:30px;
+    line-height:1.05;
+    margin-bottom:8px;
+    letter-spacing:0.2px;
+  }
+  p.lead{color:var(--muted);margin-bottom:18px}
+
+  /* Typewriter letter box */
+  .letter{
+    background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    padding:18px;
+    border-radius:14px;
+    min-height:160px;
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+    box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+    border:1px solid var(--glass);
+    position:relative;
+  }
+  .letter .paper{
+    flex:1;
+  }
+  .paper p{
+    font-size:18px;
+    line-height:1.5;
+    color:rgba(255,255,255,0.92);
+    white-space:pre-wrap;
+    word-break:break-word;
+    font-family: Georgia, "Times New Roman", serif;
+  }
+  .stamp{
+    width:86px;height:86px;border-radius:12px;
+    background:linear-gradient(180deg,#fff1f6 0%, rgba(255,255,255,0.06) 100%);
+    display:grid;place-items:center;
+    font-weight:700;color:#511a2a;
+    position:absolute;right:18px;bottom:18px;
+    transform: rotate(-8deg);
+  }
+
+  /* Right column (sidebar) */
+  .side{
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:var(--radius);
+    padding:18px;
+    border:1px solid var(--glass-2);
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .controls{display:flex;gap:10px;flex-wrap:wrap}
+  .btn{
+    background:linear-gradient(180deg,var(--accent),var(--accent-2));
+    border:none;padding:10px 14px;border-radius:12px;
+    cursor:pointer;font-weight:700;color:white;
+    box-shadow:0 6px 18px rgba(255,107,154,0.12);
+  }
+  .btn.secondary{
+    background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);font-weight:600;
+  }
+
+  .mini{
+    display:flex;gap:10px;align-items:center;justify-content:space-between;
+    padding:10px;border-radius:12px;background:var(--glass);
+    border:1px solid rgba(255,255,255,0.02);
+  }
+  .mini .title{font-size:13px;color:var(--muted)}
+  .mini .value{font-weight:700}
+
+  /* Gallery */
+  .gallery{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+  }
+  .gallery img{
+    width:100%;height:72px;object-fit:cover;border-radius:10px;cursor:pointer;
+    transition:transform .25s ease;
+  }
+  .gallery img:hover{transform:scale(1.05)}
+
+  /* Modal (letter & lightbox) */
+  .modal-back{
+    position:fixed;inset:0;background:rgba(2,6,23,0.6);display:none;place-items:center;
+    z-index:60;padding:18px;
+  }
+  .modal{
+    width:100%;max-width:760px;background:linear-gradient(180deg,#071022,#06111d);
+    border-radius:18px;padding:22px;border:1px solid rgba(255,255,255,0.03);
+    box-shadow:0 30px 80px rgba(3,7,20,0.8);
+    position:relative;
+  }
+  .modal .close{
+    position:absolute;right:14px;top:12px;border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;
+  }
+
+  /* Floating hearts canvas */
+  .hearts{
+    position:absolute;inset:0;pointer-events:none;z-index:5;
+  }
+
+  /* Confetti container */
+  .confetti{
+    position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:70;
+  }
+
+  /* Footer small */
+  .small{font-size:13px;color:rgba(255,255,255,0.6)}
+  .muted{color:rgba(255,255,255,0.6)}
+
+  /* Responsive */
+  @media (max-width:980px){
+    .wrap{grid-template-columns:1fr; padding-bottom:20px}
+    .side{order:2}
+    .hero{order:1}
+  }
+
+  /* Mobile / iPhone 15 Pro Max specifics */
+  @media (max-width: 480px) {
+    body {
+      padding: 16px;
+      padding-top: max(16px, env(safe-area-inset-top));
+      padding-bottom: max(16px, env(safe-area-inset-bottom));
+      align-items: flex-start; /* Allow scrolling from top if content is tall */
+    }
+    .wrap {
+      gap: 20px;
+    }
+    .hero {
+      padding: 24px;
+    }
+    h1 {
+      font-size: 24px;
+    }
+    .logo .heart {
+      width: 40px;
+      height: 40px;
+    }
+    .letter {
+      padding: 16px;
+      flex-direction: column; /* Stack stamp under text if needed, or keep row? Row is fine usually */
+    }
+    .stamp {
+      width: 70px;
+      height: 70px;
+      font-size: 14px;
+      position: relative;
+      right: auto;
+      bottom: auto;
+      align-self: flex-end;
+      margin-top: -20px; /* overlap slightly */
+    }
+    .btn {
+      width: 100%; /* Full width buttons are easier on mobile */
+      justify-content: center;
+      display: flex;
+    }
+    .controls {
+      flex-direction: column;
+      width: 100%;
+    }
+    .controls > div { /* "Made with care" text */
+      margin-left: 0 !important;
+      text-align: center;
+      width: 100%;
+      margin-top: 10px;
+    }
+    /* Make buttons in hero stack vertically */
+    .hero .btn, .hero .btn.secondary {
+      width: 100%;
+      margin: 0;
+    }
+    .hero > div[style*="display:flex"] {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+    
+    /* Modal adjustments */
+    .modal {
+      padding: 16px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-back {
+      padding: 10px;
+      align-items: flex-end; /* Sheet-like feel? or center is fine. Let's stick to center or end */
+    }
+    .gallery img {
+      height: 100px; /* Taller thumbnails for mobile */
+    }
+  }
+
+  /* little heart svg for reuse */
+  .pulse{
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%{transform:scale(1)}
+    50%{transform:scale(1.08)}
+    100%{transform:scale(1)}
+  }
+
+  /* subtle entrance */
+  .fade-in{opacity:0;transform:translateY(8px);animation:fadeIn .6s ease forwards}
+  .fade-in.delay{animation-delay:.12s}
+  @keyframes fadeIn{to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero fade-in">
+      <div class="logo">
+        <div class="heart">❤</div>
+        <div>
+          <h1>Для тебя — маленький сайт-сюрприз</h1>
+          <div class="small muted">Открой письмо, включи музыку и смотри сердечки</div>
+        </div>
+      </div>
+
+      <div class="letter" aria-live="polite">
+        <div class="paper">
+          <p id="typewriter" aria-label="Романтическое сообщение">Нажми «Открыть письмо», чтобы увидеть сюрприз...</p>
+        </div>
+        <div class="stamp">С любовью</div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:16px;align-items:center;flex-wrap:wrap">
+        <button class="btn" id="openLetter">Открыть письмо</button>
+        <button class="btn secondary" id="surprise">Сюрприз!</button>
+        <button class="btn secondary" id="playTune">Включить музыку</button>
+        <div style="margin-left:auto" class="small muted">Сделано с заботой ❤</div>
+      </div>
+    </div>
+
+    <aside class="side fade-in delay" aria-hidden="false">
+      <div class="mini">
+        <div>
+          <div class="title">Дата</div>
+          <div class="value" id="dateVal"></div>
+        </div>
+        <div style="text-align:right">
+          <div class="title">Статус</div>
+          <div class="value">Сюрприз готов</div>
+        </div>
+      </div>
+
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:8px">
+          <div class="small muted">Моменты</div>
+          <div class="small muted">Нажми, чтобы увеличить</div>
+        </div>
+        <div class="gallery" id="gallery">
+          <img src="./image.png" alt="moment 1" data-large>
+          <img src="./photo_2025-11-19_19-02-36.jpg" alt="moment 2" data-large>
+          <img src="./photo_2025-11-19_19-02-38.jpg" alt="moment 3" data-large>
+        </div>
+      </div>
+
+      <div style="margin-top:10px">
+        <div class="small muted">Контакт</div>
+        <form id="noteForm" style="display:flex;gap:8px;flex-direction:column;margin-top:8px">
+          <input id="name" placeholder="Твое имя" style="padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:white"/>
+          <textarea id="note" placeholder="Короткая записка..." rows="3" style="padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:white"></textarea>
+          <div style="display:flex;gap:8px">
+            <button class="btn" type="button" id="saveNote">Сохранить</button>
+            <button class="btn secondary" type="button" id="clearNote">Очистить</button>
+          </div>
+        </form>
+      </div>
+
+      <div style="margin-top:auto" class="small muted">Подсказка: картинки загружаются с Unsplash. По желанию замени их на свои файлы.</div>
+    </aside>
+  </div>
+
+  <!-- floating hearts -->
+  <canvas class="hearts" id="heartsCanvas" aria-hidden="true"></canvas>
+
+  <!-- modal for letter & lightbox -->
+  <div class="modal-back" id="modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="close" id="closeModal" aria-label="Закрыть">✕</button>
+      <h2 id="modalTitle">Письмо</h2>
+      <p class="muted" style="margin-bottom:12px">Небольшое сообщение, напечатанное по буквам — просто потому что ты этого достойна.</p>
+      <div id="modalContent" style="font-size:18px;line-height:1.6;font-family: Georgia, serif; color:rgba(255,255,255,0.95)">
+        <!-- filled by JS -->
+      </div>
+      <div style="margin-top:16px;display:flex;gap:10px;justify-content:flex-end">
+        <button class="btn" id="modalConfetti">Праздновать!</button>
+        <button class="btn secondary" id="modalClose">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- confetti layer -->
+  <canvas class="confetti" id="confettiCanvas" aria-hidden="true"></canvas>
+
+<script>
+  // --- Utilities & initial state ---
+  const dateVal = document.getElementById('dateVal');
+  const now = new Date();
+  dateVal.textContent = now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  // Typewriter content (you can modify)
+  const message = `Мое маленькое признание:\n\nЯ люблю, как ты улыбаешься без причины, как ты мечтаешь вслух и как мир кажется легче рядом с тобой.\n\nЭто — небольшой сайт, чтобы напомнить: ты важна. Пусть сегодня будет тихо-счастливым.`;
+  const typeEl = document.getElementById('typewriter');
+
+  // --- Typewriter effect (for paper and modal) ---
+  function typeText(targetEl, text, speed=28, callback){
+    targetEl.textContent = '';
+    let i=0;
+    const t = setInterval(()=>{
+      targetEl.textContent += text.charAt(i);
+      i++;
+      if(i>=text.length){ clearInterval(t); if(callback) callback(); }
+    }, speed);
+    return t;
+  }
+
+  // --- Modal logic ---
+  const modal = document.getElementById('modal');
+  const openLetter = document.getElementById('openLetter');
+  const closeModal = document.getElementById('closeModal');
+  const modalClose = document.getElementById('modalClose');
+  const modalContent = document.getElementById('modalContent');
+
+  openLetter.addEventListener('click', ()=>{
+    modal.style.display = 'grid';
+    modalContent.textContent = '';
+    // type into both paper and modal
+    typeText(typeEl, message, 16);
+    typeText(modalContent, message, 16);
+  });
+  function close(){
+    modal.style.display = 'none';
+    // reset short paper hint if closed
+    setTimeout(()=>{ if(typeEl.textContent.length>300) typeEl.textContent = "Нажми «Открыть письмо», чтобы увидеть сюрприз..."; }, 200);
+  }
+  closeModal.addEventListener('click', close);
+  modalClose.addEventListener('click', close);
+  modal.addEventListener('click', (e)=>{ if(e.target===modal) close(); });
+
+  // --- Gallery lightbox (simple) ---
+  const gallery = document.getElementById('gallery');
+  gallery.addEventListener('click', (e)=>{
+    const img = e.target.closest('img');
+    if(!img) return;
+    // open modal with big image
+    modal.style.display = 'grid';
+    modalContent.innerHTML = `<img src="${img.src.replace(/&q=80.*$/,'')}" alt="" style="width:100%;height:auto;border-radius:12px;display:block"/>`;
+  });
+
+  // --- Save note to localStorage (simple) ---
+  const saveNote = document.getElementById('saveNote');
+  const clearNote = document.getElementById('clearNote');
+  const nameInput = document.getElementById('name');
+  const noteInput = document.getElementById('note');
+
+  // load if exists
+  if(localStorage.getItem('love_note')){
+    const saved = JSON.parse(localStorage.getItem('love_note'));
+    nameInput.value = saved.name||'';
+    noteInput.value = saved.note||'';
+  }
+
+  saveNote.addEventListener('click', ()=>{
+    const payload = { name: nameInput.value.trim(), note: noteInput.value.trim(), at: new Date().toISOString() };
+    localStorage.setItem('love_note', JSON.stringify(payload));
+    alert('Записка сохранена 💌');
+  });
+  clearNote.addEventListener('click', ()=>{
+    if(confirm('Очистить записку?')){ localStorage.removeItem('love_note'); nameInput.value=''; noteInput.value=''; }
+  });
+
+  // --- Floating hearts on canvas ---
+  const heartsC = document.getElementById('heartsCanvas');
+  const ctx = heartsC.getContext('2d');
+  let w = heartsC.width = window.innerWidth;
+  let h = heartsC.height = window.innerHeight;
+  const hearts = [];
+  function Heart(x,y,size,vy,life,angle,spin,alpha,color){
+    this.x=x;this.y=y;this.size=size;this.vy=vy;this.life=life;this.age=0;this.angle=angle;this.spin=spin;this.alpha=alpha;this.color=color;
+  }
+  function makeHeart(x,y){
+    return new Heart(x,y, 12+Math.random()*20, 0.3+Math.random()*0.9, 300 + Math.random()*200, Math.random()*Math.PI*2, (Math.random()-0.5)*0.03, 0.7+Math.random()*0.3,
+      `hsl(${320+Math.random()*30}deg,90%,65%)`);
+  }
+  for(let i=0;i<14;i++){
+    hearts.push(makeHeart(Math.random()*w, h*(0.6+Math.random()*0.4)));
+  }
+  function drawHeartShape(x,y,s,angle,alpha,color){
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.rotate(angle);
+    ctx.globalAlpha = alpha;
+    ctx.beginPath();
+    ctx.moveTo(0,-s*0.3);
+    ctx.bezierCurveTo(s*0.6,-s*0.9, s*1.2, -s*0.1, 0.0, s*0.9);
+    ctx.bezierCurveTo(-s*1.2, -s*0.1, -s*0.6,-s*0.9, 0,-s*0.3);
+    ctx.closePath();
+    const g = ctx.createLinearGradient(0,-s,0,s);
+    g.addColorStop(0,'rgba(255,255,255,0.18)');
+    g.addColorStop(0.2,color);
+    g.addColorStop(1,'rgba(255,255,255,0.02)');
+    ctx.fillStyle = g;
+    ctx.fill();
+    ctx.restore();
+  }
+  function tick(){
+    ctx.clearRect(0,0,w,h);
+    for(let i=0;i<hearts.length;i++){
+      const H = hearts[i];
+      H.age++;
+      H.y -= H.vy;
+      H.x += Math.sin(H.age*0.01 + i)*0.3;
+      H.angle += H.spin;
+      H.alpha *= 0.9995;
+      drawHeartShape(H.x, H.y, H.size, H.angle, Math.max(0, H.alpha*(1 - H.age/H.life)), H.color);
+      if(H.age>H.life || H.y < -40){
+        hearts[i] = makeHeart(Math.random()*w, h+40);
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+  tick();
+  window.addEventListener('resize', ()=>{ w=heartsC.width = window.innerWidth; h=heartsC.height = window.innerHeight; });
+
+  // --- Confetti (simple particles) ---
+  const confettiC = document.getElementById('confettiCanvas');
+  const cctx = confettiC.getContext('2d');
+  confettiC.width = window.innerWidth; confettiC.height = window.innerHeight;
+  let confettiParticles = [];
+  function spawnConfetti(x,y){
+    for(let i=0;i<80;i++){
+      confettiParticles.push({
+        x:x + (Math.random()-0.5)*80,
+        y:y + (Math.random()-0.5)*40,
+        vx:(Math.random()-0.5)*6,
+        vy: -6 - Math.random()*4,
+        r: 4 + Math.random()*8,
+        rot: Math.random()*Math.PI*2,
+        color: `hsl(${Math.floor(Math.random()*360)} 90% 60%)`,
+        life: 80 + Math.random()*50,
+        age:0
+      });
+    }
+  }
+  function confettiTick(){
+    cctx.clearRect(0,0,confettiC.width, confettiC.height);
+    for(let i=confettiParticles.length-1;i>=0;i--){
+      const p = confettiParticles[i];
+      p.age++;
+      p.vy += 0.2; p.x += p.vx; p.y += p.vy; p.rot += 0.12;
+      cctx.save();
+      cctx.translate(p.x,p.y); cctx.rotate(p.rot);
+      cctx.fillStyle = p.color;
+      cctx.fillRect(-p.r/2, -p.r/2, p.r, p.r*0.6);
+      cctx.restore();
+      if(p.age > p.life || p.y > confettiC.height + 60) confettiParticles.splice(i,1);
+    }
+    requestAnimationFrame(confettiTick);
+  }
+  confettiTick();
+  window.addEventListener('resize', ()=>{ confettiC.width=window.innerWidth; confettiC.height=window.innerHeight });
+
+  // Surprise button triggers confetti and extra hearts
+  const surprise = document.getElementById('surprise');
+  surprise.addEventListener('click', (e)=>{
+    const rect = surprise.getBoundingClientRect();
+    spawnConfetti(rect.left + rect.width/2, rect.top + rect.height/2);
+    // spawn a few extra hearts near center
+    for(let i=0;i<14;i++) hearts.push(makeHeart(Math.random()*w, h*0.7 + Math.random()*100));
+  });
+
+  // Modal confetti
+  document.getElementById('modalConfetti').addEventListener('click', (e)=>{
+    spawnConfetti(window.innerWidth/2, window.innerHeight/3);
+  });
+
+  // --- Music control (user can drop in audio file by editing below) ---
+  // By default we don't ship audio for privacy; user may replace src with a file path.
+  const audio = new Audio("./odnimtselim.mp3");
+  audio.src = './odnimtselim.mp3'; // empty source - user may set audio.src = 'path/to/your.mp3'
+  audio.loop = true;
+  const playBtn = document.getElementById('playTune');
+  let playing=false;
+  playBtn.addEventListener('click', ()=>{
+    if(!audio.src ){
+      // Friendly hint how to add music
+      if(confirm('У тебя нет подключенного звука. Хочешь использовать мелодию по умолчанию (короткая фраза)?')){
+        // create a small beep-ish melody via WebAudio as placeholder
+        playTinyMelody();
+        return;
+      } else {
+        alert('Чтобы добавить музыку, открой код и укажи audio.src = "путь_к_файлу.mp3".');
+        return;
+      }
+    }
+    if(playing){ audio.pause(); playing=false; playBtn.textContent='Включить музыку'; }
+    else { audio.play(); playing=true; playBtn.textContent='Выключить музыку'; }
+  });
+
+  // tiny WebAudio fallback melody (no external file)
+  function playTinyMelody(){
+    try{
+      const ctx = new (window.AudioContext||window.webkitAudioContext)();
+      const notes = [440, 660, 550, 880, 660];
+      let t = ctx.currentTime;
+      notes.forEach((f,i)=>{
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type='sine'; o.frequency.value = f;
+        g.gain.value = 0.001 + 0.08*Math.exp(-i*0.8);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(t + i*0.18); o.stop(t + i*0.18 + 0.18);
+      });
+      alert('Мелодия сыграна ✨');
+    }catch(e){
+      alert('Не удалось воспроизвести мелодию в этом браузере.');
+    }
+  }
+
+  // --- Accessibility: keyboard to close modal with Esc ---
+  window.addEventListener('keydown', (e)=>{
+    if(e.key==='Escape' && modal.style.display==='grid') close();
+  });
+
+  // small quality-of-life: clicking heart icon adds small hearts near cursor
+  document.body.addEventListener('dblclick', (e)=>{
+    for(let i=0;i<6;i++){
+      hearts.push(new Heart(e.clientX + (Math.random()-0.5)*40, e.clientY + (Math.random()-0.5)*40, 8+Math.random()*22, 0.6+Math.random()*0.8, 200 + Math.random()*120, Math.random()*6, (Math.random()-0.5)*0.06, 0.9, `hsl(${320+Math.random()*30}deg 90% 60%)`));
+    }
+  });
+
+  // Prevent accidental text selection double-click
+  document.addEventListener('selectstart', (e)=>{ if(e.target.tagName!=='INPUT' && e.target.tagName!=='TEXTAREA') e.preventDefault(); }, false);
+</script>
+</body>
+</html>
